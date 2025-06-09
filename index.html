@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>OSI Katman Problemleri</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; margin: 2rem; background: #d0ee93; color: #212529; }
+    h1, h2 { color: #39650e; }
+    .layer-box { background: #e0e6d4; padding: 1rem 1.5rem; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin-bottom: 2rem; }
+    .highlight { color: #dc3545; font-weight: bold; }
+    code, pre { background-color: #d3d3cd; padding: 0.3em 0.5em; border-radius: 4px; display: block; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>OSI Katmanlarına Göre Ağ Problemleri ve Çözümleri</h1>
+
+  <div class="layer-box">
+    <h2>SORUN 1:L1 – Fiziksel Katman Sorunu</h2>
+    <p><strong>🛠️Sorun:</strong><br> Bu senaryoda, PC ve Server cihazları bir Switch’e bağlanmıştır.<br>
+•	PC ↔ Switch bağlantısı Copper Straight-through Cable ile yapılmıştır ve bağlantı sorunsuzdur.<br>
+•	Server ↔ Switch bağlantısı Console Cable (mavi kablo) ile yapılmıştır.<br>
+•	Console kablosu sadece cihaz yönetimi için kullanılır, veri iletimi sağlamaz.<br>
+<p><strong>💬 Belirti:</strong><br>
+•	Fiziksel bağlantı var gibi görünür.<br>
+•	LED ışığı kırmızı yanar veya hiç yanmaz.<br>
+•	ping komutu başarısız olur: Request timed out.<br>
+
+ 
+<p><strong>🧪 Teşhis:</strong><br>
+•	Kablo türü hatalı → fiziksel sinyal taşınamıyor.<br>
+•	Server veri alamıyor ve cevap veremiyor.<br>
+•	Sorun tamamen Fiziksel Katman (Layer 1) kaynaklıdır.<br>
+•	Paket, Switch’e bile ulaşmadan kablo seviyesinde kaybolur.<br>
+
+<p><strong>📁 Hatalı Senaryo Dosyası:</strong><br>
+<a href="cisco/L1-hatalı.pkt" target="_blank">L1 Hatalı Senaryo - Packet Tracer Dosyası</a> (.pkt)<br>
+
+
+</p>
+    <p><strong>Çözüm:</strong><br>
+•	Console Cable bağlantısı kaldırılır.<br>
+•	Doğru kablo türü (Copper Straight-through Cable – yeşil renkli) seçilir.<br>
+•	Server0 FastEthernet0 → Switch0 Fa0/2 bağlantısı yapılır.<br>
+•	Server’a IP verilir: IP: 192.168.1.2 / Subnet: 255.255.255.0<br>
+•	ping 192.168.1.2 komutu yeniden çalıştırılır → Reply from 192.168.1.2:.......<br><br>
+📌 Bu sorunda, fiziksel olarak bağlantı yapılmış gibi görünse de kablonun türü hatalı olduğu için veri taşınamamaktadır. Console kablosu veri iletimini desteklemez. Bu nedenle iletişim kurulamamış ve hata alınmıştır. Çözüm, doğru kablo kullanımı ile fiziksel bağlantının uygun hale getirilmesidir. Bu, tipik bir Fiziksel Katman (L1) sorunudur.
+</p>
+
+<p><strong>📁 Doğru Senaryo Dosyası:</strong><br>
+<a href="cisco/L1-dogru.pkt" target="_blank">L1 Doğru Senaryo - Packet Tracer Dosyası</a> (.pkt)<br>
+
+  </div>
+
+  <div class="layer-box">
+    <h2>SORUN 2:L2 – MAC Flooding ve Port Security</h2>
+    <p><strong>🛠️Sorun:</strong><br>
+•	Switch portlarına bağlanan cihazların MAC adreslerini otomatik olarak öğrenir.<br>
+•	Port Security aktif değilse, kötü niyetli kullanıcı tek porttan binlerce sahte MAC adresi gönderebilir.<br>
+•	Bu durum Switch’in MAC adres tablosunun dolmasına neden olur.<br>
+</p>
+Tablo dolunca:<br>
+o	Switch hedef MAC adresini bulamaz.<br>
+o	Tüm portlara broadcast (flood) yapmaya başlar.<br>
+o	Saldırgan ağdaki tüm trafiği görebilir.<br></p>
+</p>
+
+ 
+
+
+ <p><strong> 💥 Hatalı Yapılandırma:</strong><br>
+•	Switch'te hiçbir port güvenliği yok.<br>
+•	Aynı porta farklı cihazlar bağlanıyor.<br>
+•	MAC tablosuna birden fazla MAC adresi yazılıyor.<br>
+•	Switch tüm MAC’leri kabul ediyor (güvensiz davranış).<br>
+
+<p><strong> 🧪 Cisco Test Kanıtı:</strong><br>
+Switch# show mac address-table<br>
+Vlan   MAC Address     Type      Port<br>
+1      00D0.AAAA.1111  DYNAMIC   Fa0/1<br>
+1      00D0.BBBB.2222  DYNAMIC   Fa0/1<br>
+Aynı porttan 2 farklı MAC geldi = güvenlik açığı<br>
+
+<p><strong>⚠️ Bu Neden Hatalıdır? </strong> <br>
+•	Gerçek ortamda bu davranış veri güvenliğini ihlal eder.<br>
+•	Saldırganlar başkasına ait trafiği dinleyebilir.<br>
+•	Layer 2 seviyesinde ciddi bir güvenlik açığıdır.<br>
+
+<p><strong>📁 Hatalı Senaryo Dosyası:</strong><br>
+<a href="cisco/L2-hatalı.pkt" target="_blank">L2 Hatalı Senaryo - Packet Tracer Dosyası</a> (.pkt)<br>
+
+ <p><strong>✅ Çözüm :</strong><br>
+•	Switch'e bağlı portlarda Port Security aktif hale getirilir.<br>
+•	Her port yalnızca tek bir MAC adresine izin verir.<br>
+•	İlk bağlanan cihazın MAC adresi sticky yöntemiyle otomatik olarak kaydedilir.<br><br>
+•	Başka bir cihaz aynı porta bağlanırsa:<br>
+o	Switch bunu tespit eder.<br>
+o	Portu otomatik olarak shutdown (kapatır).<br>
+
+<p><strong>📁 Doğru Senaryo Dosyası:</strong><br>
+<a href="cisco/L2-dogru.pkt" target="_blank">L2 Doğru Senaryo - Packet Tracer Dosyası</a> (.pkt)<br>
+
+<p><strong>🛡️ Ayarlar:</strong><br>
+•	Port: Fa0/1<br>
+•	Maksimum MAC: 1<br>
+•	İhlal Durumu: shutdown<br>
+•	MAC kaydı: sticky<br>
+<p><strong>📄 Cisco CLI Kanıtı:</strong><br>
+Switch# show port-security interface fa0/1<br>
+Port Security              : Enabled<br>
+Port Status                : Secure-shutdown<br>
+Violation Count            : 1<br>
+
+ <p><strong>Cisco CLI Komutları:</strong>
+ <pre>Switch> enable
+Switch# configure terminal
+Switch(config)# interface fastEthernet 0/1
+Switch(config-if)# switchport mode access
+Switch(config-if)# switchport port-security
+Switch(config-if)# switchport port-security maximum 1
+Switch(config-if)# switchport port-security violation shutdown
+Switch(config-if)# switchport port-security mac-address sticky
+Switch(config-if)# end
+Switch# write memory
+</pre>
+
+ <p><strong>📈 Sonuç:</strong><br>
+•	İlk gelen MAC adresi otomatik kaydedilir.<br>
+•	Başka bir MAC gelirse → port kendini kapatır (shutdown).<br>
+•	Bu yapı sayesinde MAC Flooding saldırıları engellenmiş, sadece yetkili cihazların ağ erişimine izin verilmiştir.<br>
+•	Veri Bağlantı Katmanı (L2) düzeyinde güçlü bir güvenlik kontrolü sağlanmıştır.<br>
+
+
+ </div>
+
+  <div class="layer-box">
+    <h2>SORUN 3:L3 – Farklı Subnet'te IP Sorunu</h2>
+    <p><strong>🛠️Sorun:</strong><br> •	Ağ katmanı (L3) cihazlara IP adresleri atayarak iletişimi sağlar.<br>
+•	Aynı yerel ağda bulunan cihazlara, aynı subnet'e ait IP adresleri verilmelidir.<br>
+•	Eğer farklı subnet’te IP verilirse, cihazlar birbirine ping atamaz.<br>
+•	Bu projede iki PC aynı Switch’e bağlı olmasına rağmen farklı subnet’e ait IP adresleri ile yapılandırıldığında iletişim kuramadıkları görülmüştür.<br>
+</p>
+   
+<div style="border: 1px solid #ccc; padding: 1rem; width: fit-content; background-color: #f9f9f9; border-radius: 8px;">
+  <strong>Hatalı Senaryo:</strong>
+  <table border ="1" cellpadding="8" cellspacing="0" style="margin-top: 0.5rem; border-collapse: collapse;">
+    <tr style="background-color: #e9ecef;">
+      <th>Cihaz</th>
+      <th>IP Address</th>
+      <th>Subnet Mask</th>
+    </tr>
+    <tr>
+      <td>PC0</td>
+      <td>192.168.1.10</td>
+      <td>255.255.255.0</td>
+    </tr>
+    <tr>
+      <td>PC1</td>
+      <td>192.168.2.11</td>
+      <td>255.255.255.0</td>
+    </tr>
+  </table>
+</div>
+<br>
+•	ping sonucu: Request timed out.<br>
+•	📌 Sebep: PC'ler farklı ağlara ait olduğu için yönlendirme yapılmaz.<br>
+•	📌 Ağ geçidi (gateway) yapılandırılmadığı için iletişim olmaz.<br>
+
+<p><strong>📁 Hatalı Senaryo Dosyası:</strong><br>
+<a href="cisco/L3-hatalı.pkt" target="_blank">L3 Hatalı Senaryo - Packet Tracer Dosyası</a> (.pkt)<br>
+
+<p><strong>✅ Çözüm: IP Yapılandırmasının Düzenlenmesi</strong><br>
+
+<div style="border: 1px solid #ccc; padding: 1rem; width: fit-content; background-color: #f9f9f9; border-radius: 8px;">
+ 
+  <table border ="1" cellpadding="8" cellspacing="0" style="margin-top: 0.5rem; border-collapse: collapse;">
+    <tr style="background-color: #e9ecef;">
+      <th>Cihaz</th>
+      <th>IP Address</th>
+      <th>Subnet Mask</th>
+    </tr>
+    <tr>
+      <td>PC0</td>
+      <td>192.168.1.10</td>
+      <td>255.255.255.0</td>
+    </tr>
+    <tr>
+      <td>PC1</td>
+      <td>192.168.1.11</td>
+      <td>255.255.255.0</td>
+    </tr>
+  </table>
+</div>
+<br>
+Test Sonucu (Çözümden Sonra):
+Reply from 192.168.1.11: bytes=32 time<1ms TTL=128  <br>
+•	Bu sonuç, iki cihazın artık aynı ağda olduğunu ve aralarında başarılı şekilde iletişim kurabildiklerini göstermektedir.<br>
+
+
+  </div>
+
+  <p><strong>📁 Doğru Senaryo Dosyası:</strong><br>
+<a href="cisco/L3-dogru.pkt" target="_blank">L3 Doğru Senaryo - Packet Tracer Dosyası</a> (.pkt)<br>
+
+  <div class="layer-box">
+    <h2>SORUN :L4 – HTTP Port 80 Servisi Kapalı</h2>
+    <p><strong>🛠️Sorun:</strong> <br>
+Transport Layer, ağ üzerinden iletilen verilerin hedefteki uygulamalara doğru şekilde yönlendirilmesini sağlar. Bu yönlendirme port numaraları aracılığıyla yapılır. Örnek portlar:<br>
+•	HTTP → Port 80<br>
+•	HTTPS → Port 443<br>
+•	FTP → Port 21<br>
+Bu senaryoda, istemci (PC0), aynı ağdaki web sunucusuna (Server) HTTP üzerinden erişmek ister. Ancak sunucuda HTTP servisi kapalıdır.<br>
+</p>
+
+<div style="border: 1px solid #ccc; padding: 1rem; width: fit-content; background-color: #f9f9f9; border-radius: 8px;">
+ <strong>❌ Hatalı Durum (HTTP Kapalı):</strong>
+  <table border ="1" cellpadding="8" cellspacing="0" style="margin-top: 0.5rem; border-collapse: collapse;">
+    <tr style="background-color: #e9ecef;">
+      <th>Cihaz</th>
+      <th>IP Address</th>
+      <th>Subnet Mask</th>
+    </tr>
+    <tr>
+      <td>PC0</td>
+      <td>192.168.10.10</td>
+      <td>255.255.255.0</td>
+    </tr>
+    <tr>
+      <td>PC1</td>
+      <td>192.168.10.20</td>
+      <td>255.255.255.0</td>
+    </tr>
+  </table>
+</div>
+<br>
+<strong>🔍 Testler:</strong><br>
+•	Ping Testi: Başarılı ✅<br>
+•	Web Erişimi: http://192.168.10.20 → "Server Reset Connection" ❌<br>
+📌 Sebep: HTTP servisi kapalı olduğu için port 80 erişimi başarısızdır. L4 düzeyinde port erişim sorunu oluşur.<br>
+
+
+<p><strong>📁 Hatalı Senaryo Dosyası:</strong><br>
+<a href="cisco/L4-hatalı.pkt" target="_blank">L4 Hatalı Senaryo - Packet Tracer Dosyası</a> (.pkt)<br>
+
+
+    <p><strong>✅ Çözüm: HTTP Servisini Açmak</strong><br>Server’da HTTP servisi aktif edilir.<br>
+•	Web tarayıcı: http://192.168.10.20 → Cisco Web Sayfası açıldı ✅<br>
+</p>
+
+<p><strong>📁 Doğru Senaryo Dosyası:</strong><br>
+<a href="cisco/L4-dogru.pkt" target="_blank">L4 Doğru Senaryo - Packet Tracer Dosyası</a> (.pkt)<br>
+
+ <p><strong>📌 Sonuç:</strong><br>
+Port 80 erişimi başarıyla sağlanmış, HTTP uygulaması çalıştırılmıştır. Bu, L4 katmanındaki port yönlendirme işlevinin başarıyla gerçekleştiğini gösterir.
+
+  </div>
+
+  <div class="layer-box">
+    <h2>SORUN 5:L5 – FTP Servisine Oturum Açılamıyor</h2>
+    <p><strong>🛠️ Sorun:</strong><br>
+    Session Layer, cihazlar arası oturum açılmasını ve sürdürülmesini sağlar. FTP servisi kapalı olduğunda istemci oturum başlatamaz.
+</p>
+<div style="border: 1px solid #ccc; padding: 1rem; width: fit-content; background-color: #f9f9f9; border-radius: 8px;">
+ <strong>❌ Hatalı Durum :</strong>
+  <table border ="1" cellpadding="8" cellspacing="0" style="margin-top: 0.5rem; border-collapse: collapse;">
+    <tr style="background-color: #e9ecef;">
+      <th>Cihaz</th>
+      <th>IP Address</th>
+      <th>Subnet Mask</th>
+    </tr>
+    <tr>
+      <td>PC0</td>
+      <td>192.168.50.10</td>
+      <td>255.255.255.0</td>
+    </tr>
+    <tr>
+      <td>PC1</td>
+      <td>192.168.50.20</td>
+      <td>255.255.255.0</td>
+    </tr>
+  </table>
+</div>
+<br>
+•	Server’da FTP servisi OFF<br>
+•	ftp 192.168.50.20 → %Error opening ftp://192.168.50.20/ (Timed out) ❌<br>
+
+
+<p><strong>📁 Hatalı Senaryo Dosyası:</strong><br>
+<a href="cisco/L5-hatalı.pkt" target="_blank">L5 Hatalı Senaryo - Packet Tracer Dosyası</a> (.pkt)<br>
+
+    <p><strong>✅ Çözümlü Durum:</strong> <br>•	Server’da FTP servisi ON<br>
+•	Kullanıcı: gamze / Şifre: 1234<br>
+•	ftp bağlantısı başarılı → 230 User logged in<br>
+</p>
+<p><strong>📌 Sonuç:</strong><br>
+FTP servisi aktif hale getirildiğinde oturum başarıyla başlatılmış, Session Layer sorunsuz çalışmıştır.<br>
+
+  </div>
+
+  <p><strong>📁 Doğru Senaryo Dosyası:</strong><br>
+<a href="cisco/L5-dogru.pkt" target="_blank">L5 Doğru Senaryo - Packet Tracer Dosyası</a> (.pkt)<br>
+
+  <div class="layer-box">
+    <h2>SORUN 6:L6 – Sunum Katmanı Sorunu (index.html biçimsiz)</h2>
+    <p><strong>🛠️ Sorun:</strong> <br>
+      Sunum katmanı, iletilen verinin uygulama katmanına anlaşılabilir ve işlenebilir bir formatta sunulmasından sorumludur. Ancak bu katmandaki bir hata, istemciye (PC) gelen verinin anlamsız ya da biçimsiz görünmesine neden olabilir. Bu durumda istemci cihaz sunucudan veri almasına rağmen, bu veriyi anlamlandıramaz.
+     <p><strong>🚫 Hatalı Durum:</strong> <br>
+    Sunucu üzerinde HTTP servisi açık olmasına rağmen, varsayılan HTML sayfası düzenlenmemiştir veya boş bir metin ile sunulmaktadır. Kullanıcı http://192.168.10.20 adresine eriştiğinde, boş bir sayfa veya formatlanmamış veriyle karşılaşır. Bu, sunum katmanının görevini yerine getiremediğini gösterir.
+    
+<p><strong>📁 Hatalı Senaryo Dosyası:</strong><br>
+<a href="cisco/L6-hatalı.pkt" target="_blank">L6 Hatalı Senaryo - Packet Tracer Dosyası</a> (.pkt)<br>
+
+
+
+   <p><strong>✅ Çözüm :</strong> <br>
+Sunucu üzerinde HTTP servisi aktif hale getirilmiş, “index.html” dosyası düzgün bir HTML yapısı ile güncellenmiştir. HTML formatı ile biçimlendirilmiş veri, istemci tarafından kolaylıkla yorumlanabilir ve düzgün şekilde görüntülenir. Böylece Sunum Katmanı verinin doğru bir biçimde iletimini sağlar.<br>
+
+🔧 Cisco Packet Tracer Uygulaması:<br>
+PC ve Server aynı ağda yapılandırılmıştır (192.168.10.x)<br>
+
+Server'da HTTP servisi aktiftir<br>
+
+“index.html” dosyası aşağıdaki içerikle düzenlenmiştir:<br>
+<pre>&lt;html&gt; &lt;head&gt;&lt;title&gt;Sunum Katmanı Başarılı&lt;/title&gt;&lt;/head&gt; 
+&lt;body&gt; 
+  &lt;h1&gt;Hoş Geldiniz!&lt;/h1&gt; 
+  &lt;p&gt;Bu sayfa doğru şekilde sunulmuştur.&lt;/p&gt; 
+&lt;/body&gt; 
+&lt;/html&gt;
+
+
+<p><strong>📁 Doğru Senaryo Dosyası:</strong><br>
+<a href="cisco/L6-dogru.pkt" target="_blank">L6 Doğru Senaryo - Packet Tracer Dosyası</a> (.pkt)<br>
+</pre>
+<br>
+•	PC, Web Browser üzerinden http://192.168.10.20 adresine erişmiş ve biçimlendirilmiş web sayfasını başarıyla görmüştür.<br>
+    
+    
+    </div>
+
+  <div class="layer-box">
+    <h2>SORUN 7:L7 – Application Layer Sorunu: DNS Kayıtlı Değil / Çözümleme Yapılamıyor</h2>
+    <p><strong>🛠️Sorun:</strong>Bir istemci cihaz (PC), bir web sitesine (www.ornek.com) erişmeye çalıştığında "Host name unresolved" hatası alıyor. Bu hata, tarayıcının URL’yi karşılık gelen IP adresine çevirememesi durumunda ortaya çıkar. Sorunun temel nedeni DNS servisinin çalışmaması veya istenen alan adı için DNS kaydının olmamasıdır.</p>
+    <p><strong>🔍 Hatalı Senaryo:</strong><br>
+•DNS servisi kapalı ya da aktif değil.<br>
+
+•www.ornek.com alan adı DNS listesinde yer almıyor.<br>
+
+•Tarayıcı üzerinden www.ornek.com girildiğinde "hostname unresolved" hatası alını.r<br>
+
+•Ağ bağlantısı olmasına rağmen web sayfası açılmaz.<br>
+    
+<p><strong>📁 Hatalı Senaryo Dosyası:</strong><br>
+<a href="cisco/L7-hatalı.pkt" target="_blank">L7 Hatalı Senaryo - Packet Tracer Dosyası</a> (.pkt)<br>
+    
+    <p><strong>✅ Çözüm :</strong> <br>
+Server Cihazı Ayarları:<br>
+
+IP Adresi: 192.168.10.10<br><br>
+
+DNS Servisi: Aktif hale getirildi.<br>
+
+DNS sekmesinden şu kayıt eklendi:<br>
+
+Name: www.ornek.com<br><br>
+
+Address: 192.168.10.10<br>
+
+HTTP Servisi:
+
+Aynı serverda HTTP servisi aktif edildi.<br>
+
+Varsayılan ya da özel bir index.html dosyası bırakıldı.<br><br>
+
+Client Cihazı (PC) Ayarları:<br>
+
+IP Adresi: 192.168.10.20<br>
+
+DNS Server: 192.168.10.10<br>
+
+Web browser üzerinden http://www.ornek.com adresine erişildi.<br>
+
+<p><strong>Sonuç: </strong> <br>
+
+DNS çözümlemesi başarılı oldu.<br>
+
+Web sitesi tarayıcıda açıldı.<br>
+
+DNS sunucusu üzerinden alan adı IP’ye çevrildi ve uygulama katmanı iletişimi başarıyla tamamlandı.
+
+</p>
+
+<p><strong>📁 Doğru Senaryo Dosyası:</strong><br>
+<a href="cisco/L7-dogru.pkt" target="_blank">L7 Doğru Senaryo - Packet Tracer Dosyası</a> (.pkt)<br>
+
+<p><strong>🧩 Açıklama:</strong>
+Bu senaryoda çözümleme işlemi DNS sunucusu sayesinde gerçekleşti. Uygulama katmanındaki bu sorun; kullanıcıların alan adları üzerinden erişim sağlayamamasıyla doğrudan ilişkilidir. Sorunun çözümü için DNS servisinin aktif edilmesi ve ilgili domain kaydının eklenmesi yeterlidir.
+
+  </div>
+
+  <div class="layer-box">
+    <h2>SORUN 8: VLAN Hatalı Yapılandırması</h2>
+    <p><strong>🛠️Sorun:</strong><br>
+İki bilgisayar (PC0 ve PC1), aynı switch’e bağlı olmalarına rağmen birbirlerine ping atamamaktadır. Kablolama ve IP ayarları doğru olmasına rağmen, “Request timed out” hatası alınmaktadır. Bu durum, veri bağlantı katmanı (L2) kaynaklı bir problemdir.<br>
+
+<p><strong>🧯 Hatanın Teknik Nedeni:</strong><br>
+Switch üzerindeki portlar aynı VLAN altında konumlandırılmamıştır.<br>
+Örneğin:<br>
+
+PC0 → Fa0/1 → VLAN 10<br>
+
+PC1 → Fa0/2 → VLAN 1 (varsayılan)<br>
+<p><strong>📁 Hatalı Senaryo Dosyası:</strong><br>
+<a href="cisco/L8-hatalı.pkt" target="_blank">L8 Hatalı Senaryo - Packet Tracer Dosyası</a> (.pkt)<br>
+
+
+
+Bu durum, PC’ler arasında L2 broadcast alanı uyumsuzluğu yaratır. Aynı ağda olsalar bile veri birbirine ulaşamaz.<br>
+    <p><strong>✅ Çözüm:</strong> Tüm portlar aynı VLAN'a alınarak L2 broadcast uyumu sağlanmalıdır.
+Cisco CLI üzerinden şu komutlar uygulanmıştır:</p>
+    <pre>enable
+configure terminal
+
+vlan 10
+name ORTAK_VLAN
+exit
+
+interface fastethernet0/1
+switchport mode access
+switchport access vlan 10
+exit
+
+interface fastethernet0/2
+switchport mode access
+switchport access vlan 10
+exit
+
+end
+write memory
+</pre>
+<p><strong>🧪 Test Sonucu:</strong><br>
+Her iki bilgisayardan da karşı IP'ye ping atıldığında başarıyla cevap alınmıştır. Sorun çözülmüş, veri bağlantı katmanı senkronize çalışır duruma gelmiştir.
+  </div>
+
+  <p><strong>📁 Doğru Senaryo Dosyası:</strong><br>
+<a href="cisco/L8-dogru.pkt" target="_blank">L8 Doğru Senaryo - Packet Tracer Dosyası</a> (.pkt)<br>
+
+  <div class="layer-box">
+    <h2>SORUN 9:Firewall (ACL) Hatalı Konfigürasyonu</h2>
+    <p><strong>🛠️Sorun:</strong><br>Bu senaryoda, router üzerinde tanımlanan yanlış bir Access Control List (ACL) nedeniyle istemciler (Client PC) sunucuya (Server) HTTP üzerinden erişememektedir. Yani kullanıcılar tarayıcıya sunucu IP’sini yazdıklarında sayfa yüklenmez ve “host unreachable” veya timeout hatası alırlar.<br>
+
+Bu sorun hem Network Layer (L3) hem de Application Layer (L7) ile ilgilidir:<br>
+
+•L3: Paket yönlendirme ve ACL filtreleme<br>
+
+•L7: HTTP uygulama hizmetine erişim</p>
+
+<p><strong>❌ Hatalı Yapılandırma:</strong><br>
+•Router üzerinde tanımlı ACL (Access List 100), HTTP (port 80) trafiğini engelleyecek şekilde konumlandırılmıştır.<br>
+
+•Bu ACL, ip access-group 100 in komutuyla yanlış arayüze (FastEthernet0/0) uygulanmıştır.<br>
+
+
+<p><strong>📁 Hatalı Senaryo Dosyası:</strong><br>
+<a href="cisco/L9-hatalı.pkt" target="_blank">L9 Hatalı Senaryo - Packet Tracer Dosyası</a> (.pkt)<br>
+
+
+•Sunucunun HTTP servisi açık olmasına rağmen, paketler router'dan geçemez.<br>
+    <p><strong>✅ Çözüm:</strong><br>
+•Router CLI arayüzüne girilerek var olan ACL kaldırılmış ve engelleyici kural iptal edilmiştir.<br>
+
+•Gerekirse tüm trafiğe izin veren bir ACL (permit ip any any) tanımlanmıştır.<br>
+
+•HTTP servisi açık olan sunucuya istemciden erişim sağlanmış ve test başarıyla gerçekleştirilmiştir.</p>
+
+ <p><strong>🧩Komutlar (Router CLI):</strong>
+  <pre>enable
+configure terminal
+
+no access-list 100
+interface fastethernet0/0
+no ip access-group 100 in
+exit
+</pre>
+(İsteğe bağlı olarak yeni ACL ile tüm trafiğe izin verilebilir):<br>
+<pre>access-list 100 permit ip any any
+interface fastethernet0/0
+ip access-group 100 in
+exit
+</pre>
+
+<p><strong>🔍 Test:</strong><br>
+Client PC’den Web Browser açılarak http://192.168.20.10 adresine gidildi.<br>
+
+Web sayfası düzgün şekilde yüklendi.<br>
+
+Sorunun firewall (ACL) kaynaklı olduğu doğrulandı.<br><br>
+
+Bu senaryo, yanlış yapılandırılmış ACL'lerin ağ servislerine nasıl zarar verebileceğini ve uygulama katmanı hizmetlerine (örneğin HTTP) nasıl etki ettiğini gösteren güçlü bir örnektir.
+
+
+  </div>
+
+  <p><strong>📁 Doğru Senaryo Dosyası:</strong><br>
+<a href="cisco/L9-dogru.pkt" target="_blank">L9 Doğru Senaryo - Packet Tracer Dosyası</a> (.pkt)<br>
+
+  <div class="layer-box">
+    <h2>SORUN 10:Tüm Katmanlarda Donanım Uyumsuzluğu</h2>
+    <p><strong>🛠️Sorun:</strong> Bir ağ projesinde katmanlar arası uyum eksikliği nedeniyle istemciler (PC'ler) sunucuya erişememektedir. Detaylı analiz sonucunda aşağıdaki katmanlarda sorun tespit edilmiştir:<br>
+
+•L1 (Fiziksel Katman): UTP yerine telefon kablosu (coaxial) kullanılmıştır.<br>
+
+•L2 (Veri Bağlantı Katmanı): MAC adresleri sabitlenmemiştir.<br>
+
+•L3 (Ağ Katmanı): IP adresi yapılandırılmamıştır.<br>
+
+•L4 (Taşıma Katmanı): Uygulamalar port numarası uyumsuzluğu yaşar.<br>
+
+•L7 (Uygulama Katmanı): HTTP servisi devre dışıdır ya da DNS ismi çözülememektedir.<br>
+
+Bu tür katmanlar arası hatalar özellikle büyük ölçekli ağ projelerinde teşhis edilmesi zor ve zaman alıcı problemlere neden olur.<br>
+
+</p>
+    <p><strong>⚙️ Cisco Packet Tracer'da Hatalı Senaryo:</strong><br> •UTP yerine Phone Cable (telefon kablosu) ile bağlantı yapılmıştır.
+
+•Router üzerinde IP yapılandırması eksiktir.<br>
+
+•PC'lerde yanlış gateway verilmiştir.<br>
+
+•Server’da HTTP servisi çalıştırılmamıştır.<br>
+
+•Switch’e bağlı cihazlar farklı VLAN’larda bırakılmıştır.<br>
+
+•DNS çözümlemesi çalışmamaktadır ve "hostname unresolved" hatası alınmıştır.</p>
+
+
+<p><strong>📁 Hatalı Senaryo Dosyası:</strong><br>
+<a href="cisco/L10-hatalı.pkt" target="_blank">L10 Hatalı Senaryo - Packet Tracer Dosyası</a> (.pkt)<br>
+
+<p><strong>✅ Çözüm:</strong><br>
+•Tüm cihazlar uygun UTP kablo ile bağlanmalı.<br>
+
+•Her cihazın IP adresi ve subnet maskeleri doğru girilmeli.<br>
+
+•Router'a varsayılan gateway olarak 192.168.1.1 atanmalı ve aktif hale getirilmeli.<br>
+
+•Switch’te portlar aynı VLAN altında olmalı.<br>
+
+•Server’a DNS ve HTTP servisleri yüklenmeli ve açık olmalıdır.<br>
+
+•Ping ve browser testi ile bağlantı doğrulanmalı.<br>
+
+
+<p><strong>📁 Doğru Senaryo Dosyası:</strong><br>
+<a href="cisco/L10-dogru.pkt" target="_blank">L10 Doğru Senaryo - Packet Tracer Dosyası</a> (.pkt)<br>
+
+<p><strong>🎯 Sonuç:</strong><br>
+Bu senaryo, tüm OSI katmanlarının birbiriyle uyumlu çalışmasının önemini ortaya koymaktadır. Katmanlar arası hatalar, tek bir katmandan değil; yapıların birlikte çalışamamasından kaynaklanabilir. Bu nedenle, ağ tasarımında hem donanım hem yazılım uyumluluğu test edilmelidir.
+
+
+
+
+
+  </div>
+
+</body>
+</html>
