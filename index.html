@@ -33,7 +33,7 @@
 • The packet is lost at the cable level before even reaching the Switch.<br>
 
 <p><strong>📁 Faulty Scenario File:</strong><br>
-<a href="cisco/S1-hatalı.pkt" target="_blank">L1 Faulty Scenario - Packet Tracer File</a> (.pkt)<br>
+<a href="cisco/S1-hatalı.pkt" target="_blank">L-S1 Faulty Scenario - Packet Tracer File</a> (.pkt)<br>
 
 <p><strong>Solution:</strong><br>
 • Remove the Console Cable connection.<br>
@@ -45,7 +45,7 @@
 </p>
 
 <p><strong>📁 Correct Scenario File:</strong><br>
-<a href="cisco/S1-dogru.pkt" target="_blank">L1 Correct Scenario - Packet Tracer File</a> (.pkt)<br>
+<a href="cisco/S1-dogru.pkt" target="_blank">S1 Correct Scenario - Packet Tracer File</a> (.pkt)<br>
 </div>
 
 <div class="layer-box">
@@ -79,7 +79,7 @@ Two different MACs came from the same port = security vulnerability<br>
 • It represents a serious vulnerability at Layer 2.<br>
 
 <p><strong>📁 Faulty Scenario File:</strong><br>
-<a href="cisco/S2-hatalı.pkt" target="_blank">L2 Faulty Scenario - Packet Tracer File</a> (.pkt)<br>
+<a href="cisco/S2-hatalı.pkt" target="_blank">S2 Faulty Scenario - Packet Tracer File</a> (.pkt)<br>
 
 <p><strong>✅ Solution:</strong><br>
 • Port Security should be enabled on switch ports.<br>
@@ -90,7 +90,7 @@ o The switch detects it.<br>
 o The port automatically shuts down.<br>
 
 <p><strong>📁 Correct Scenario File:</strong><br>
-<a href="cisco/S2-dogru.pkt" target="_blank">L2 Correct Scenario - Packet Tracer File</a> (.pkt)<br>
+<a href="cisco/S2-dogru.pkt" target="_blank">S2 Correct Scenario - Packet Tracer File</a> (.pkt)<br>
 
 <p><strong>🛡️ Settings:</strong><br>
 • Port: Fa0/1<br>
@@ -160,7 +160,7 @@ Switch# write memory
 • 📌 Communication fails because no gateway is configured.<br>
 
 <p><strong>📁 Faulty Scenario File:</strong><br>
-<a href="cisco/S3-hatalı.pkt" target="_blank">L3 Faulty Scenario - Packet Tracer File</a> (.pkt)<br>
+<a href="cisco/S3-hatalı.pkt" target="_blank">S3 Faulty Scenario - Packet Tracer File</a> (.pkt)<br>
 
 <p><strong>✅ Solution: Correcting the IP Configuration</strong><br>
 
@@ -191,7 +191,7 @@ Reply from 192.168.1.11: bytes=32 time&lt;1ms TTL=128  <br>
 
 
 <p><strong>📁 Correct Scenario File:</strong><br>
-<a href="cisco/S3-dogru.pkt" target="_blank">L3 Correct Scenario - Packet Tracer File</a> (.pkt)<br>
+<a href="cisco/S3-dogru.pkt" target="_blank">S3 Correct Scenario - Packet Tracer File</a> (.pkt)<br>
 </div>
 
   <div class="layer-box">
@@ -231,7 +231,7 @@ In this scenario, the client (PC0) wants to access the web server (Server) on th
 📌 Reason: Since the HTTP service is disabled, access to port 80 fails. A port access issue occurs at the L4 level.<br>
 
 <p><strong>📁 Faulty Scenario File:</strong><br>
-<a href="cisco/S4-hatalı.pkt" target="_blank">L4 Faulty Scenario - Packet Tracer File</a> (.pkt)<br>
+<a href="cisco/S4-hatalı.pkt" target="_blank">S4 Faulty Scenario - Packet Tracer File</a> (.pkt)<br>
 
 <p><strong>✅ Solution: Enabling the HTTP Service</strong><br>
 Enable the HTTP service on the server.<br>
@@ -239,7 +239,7 @@ Enable the HTTP service on the server.<br>
 </p>
 
 <p><strong>📁 Correct Scenario File:</strong><br>
-<a href="cisco/S4-dogru.pkt" target="_blank">L4 Correct Scenario - Packet Tracer File</a> (.pkt)<br>
+<a href="cisco/S4-dogru.pkt" target="_blank">S4 Correct Scenario - Packet Tracer File</a> (.pkt)<br>
 
 <p><strong>📌 Result:</strong><br>
 Access to port 80 was successfully achieved and the HTTP application was launched. This confirms that the port redirection function at Layer 4 has worked correctly.
@@ -277,7 +277,7 @@ Access to port 80 was successfully achieved and the HTTP application was launche
 • ftp 192.168.50.20 → %Error opening ftp://192.168.50.20/ (Timed out) ❌<br>
 
 <p><strong>📁 Faulty Scenario File:</strong><br>
-<a href="cisco/S5-hatalı.pkt" target="_blank">L5 Faulty Scenario - Packet Tracer File</a> (.pkt)<br>
+<a href="cisco/S5-hatalı.pkt" target="_blank">S5 Faulty Scenario - Packet Tracer File</a> (.pkt)<br>
 
 <p><strong>✅ Resolved Case:</strong><br>
 • FTP service is ON on the server<br>
@@ -291,7 +291,7 @@ When the FTP service is enabled, the session is successfully initiated and the S
 
 
 <p><strong>📁 Correct Scenario File:</strong><br>
-<a href="cisco/S5-dogru.pkt" target="_blank">L5 Correct Scenario - Packet Tracer File</a> (.pkt)<br>
+<a href="cisco/S5-dogru.pkt" target="_blank">S5 Correct Scenario - Packet Tracer File</a> (.pkt)<br>
 </div>
 
 <div class="layer-box">
@@ -305,7 +305,7 @@ When the FTP service is enabled, the session is successfully initiated and the S
   </p>
 
   <p><strong>📁 Faulty Scenario File:</strong><br>
-  <a href="cisco/S6-hatalı.pkt" target="_blank">L6 Faulty Scenario - Packet Tracer File</a> (.pkt)<br>
+  <a href="cisco/S6-hatalı.pkt" target="_blank">S6 Faulty Scenario - Packet Tracer File</a> (.pkt)<br>
 
   <p><strong>✅ Solution:</strong><br>
   The HTTP service on the server has been activated, and the “index.html” file has been updated with a proper HTML structure. With HTML formatting, the data can be easily interpreted by the client and displayed correctly. This ensures that the Presentation Layer transmits data in the correct format.<br><br>
@@ -324,7 +324,7 @@ When the FTP service is enabled, the session is successfully initiated and the S
 </pre>
 
 <p><strong>📁 Correct Scenario File:</strong><br>
-<a href="cisco/S6-dogru.pkt" target="_blank">L6 Correct Scenario - Packet Tracer File</a> (.pkt)<br>
+<a href="cisco/S6-dogru.pkt" target="_blank">S6 Correct Scenario - Packet Tracer File</a> (.pkt)<br>
 </p>
 
 <br>
@@ -342,7 +342,7 @@ When the FTP service is enabled, the session is successfully initiated and the S
   </p>
 
   <p><strong>📁 Faulty Scenario File:</strong><br>
-  <a href="cisco/S7-hatalı.pkt" target="_blank">L7 Faulty Scenario - Packet Tracer File</a> (.pkt)<br>
+  <a href="cisco/S7-hatalı.pkt" target="_blank">S7 Faulty Scenario - Packet Tracer File</a> (.pkt)<br>
 
   <p><strong>✅ Solution:</strong><br>
 Server Device Configuration:<br>
@@ -371,7 +371,7 @@ The domain name was translated to IP via the DNS server, and communication at th
 </p>
 
 <p><strong>📁 Correct Scenario File:</strong><br>
-<a href="cisco/S7-dogru.pkt" target="_blank">L7 Correct Scenario - Packet Tracer File</a> (.pkt)<br>
+<a href="cisco/S7-dogru.pkt" target="_blank">S7 Correct Scenario - Packet Tracer File</a> (.pkt)<br>
 
 <p><strong>🧩 Explanation:</strong><br>
 In this scenario, the resolution process was completed thanks to the DNS server. This issue at the Application Layer is directly related to users being unable to access websites via domain names. Activating the DNS service and adding the required domain record is sufficient to solve the problem.
@@ -392,7 +392,7 @@ PC1 → Fa0/2 → VLAN 1 (default)<br>
   </p>
 
   <p><strong>📁 Faulty Scenario File:</strong><br>
-  <a href="cisco/S8-hatalı.pkt" target="_blank">L8 Faulty Scenario - Packet Tracer File</a> (.pkt)<br>
+  <a href="cisco/S8-hatalı.pkt" target="_blank">S8 Faulty Scenario - Packet Tracer File</a> (.pkt)<br>
 
   <p>This situation creates a Layer 2 broadcast domain mismatch between the PCs. Even though they are in the same IP network, the data cannot reach each other.<br></p>
 
@@ -425,7 +425,7 @@ When pinging the opposing IP from both computers, successful replies were receiv
 
 
 <p><strong>📁 Correct Scenario File:</strong><br>
-<a href="cisco/S8-dogru.pkt" target="_blank">L8 Correct Scenario - Packet Tracer File</a> (.pkt)<br>
+<a href="cisco/S8-dogru.pkt" target="_blank">S8 Correct Scenario - Packet Tracer File</a> (.pkt)<br>
 </div>
  <div class="layer-box">
   <h2>PROBLEM 9: Firewall (ACL) Misconfiguration</h2>
@@ -443,7 +443,7 @@ This issue involves both the Network Layer (L3) and the Application Layer (L7):<
 </p>
 
 <p><strong>📁 Faulty Scenario File:</strong><br>
-<a href="cisco/S9-hatalı.pkt" target="_blank">L9 Faulty Scenario - Packet Tracer File</a> (.pkt)<br>
+<a href="cisco/S9-hatalı.pkt" target="_blank">S9 Faulty Scenario - Packet Tracer File</a> (.pkt)<br>
 
 • Even though the HTTP service is enabled on the server, packets cannot pass through the router.<br>
 
@@ -478,7 +478,7 @@ This scenario is a strong example of how misconfigured ACLs can disrupt network 
 
 
 <p><strong>📁 Correct Scenario File:</strong><br>
-<a href="cisco/S9-dogru.pkt" target="_blank">L9 Correct Scenario - Packet Tracer File</a> (.pkt)<br>
+<a href="cisco/S9-dogru.pkt" target="_blank">S9 Correct Scenario - Packet Tracer File</a> (.pkt)<br>
 </div>
   <div class="layer-box">
   <h2>PROBLEM 10: Hardware Incompatibility Across All Layers</h2>
@@ -503,7 +503,7 @@ Such cross-layer errors often lead to difficult and time-consuming problems, esp
 </p>
 
 <p><strong>📁 Faulty Scenario File:</strong><br>
-<a href="cisco/S10-hatalı.pkt" target="_blank">L10 Faulty Scenario - Packet Tracer File</a> (.pkt)<br>
+<a href="cisco/S10-hatalı.pkt" target="_blank">S10 Faulty Scenario - Packet Tracer File</a> (.pkt)<br>
 
 <p><strong>✅ Solution:</strong><br>
 • All devices must be connected with proper UTP cables.<br>
@@ -515,7 +515,7 @@ Such cross-layer errors often lead to difficult and time-consuming problems, esp
 </p>
 
 <p><strong>📁 Correct Scenario File:</strong><br>
-<a href="cisco/S10-dogru.pkt" target="_blank">L10 Correct Scenario - Packet Tracer File</a> (.pkt)<br>
+<a href="cisco/S10-dogru.pkt" target="_blank">S10 Correct Scenario - Packet Tracer File</a> (.pkt)<br>
 
 <p><strong>🎯 Conclusion:</strong><br>
 This scenario highlights the importance of proper coordination across all OSI layers. Errors often arise not from a single layer, but from the failure of these layers to work together. Therefore, both hardware and software compatibility must be tested during network design.
